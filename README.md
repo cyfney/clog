@@ -1,6 +1,6 @@
 # CLOG Cross-Platform Logging Library
 
-[中文版本](README_CN.md)
+- [中文版](README_CN.md)
 
 ## Overview
 
