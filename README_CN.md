@@ -66,20 +66,21 @@ cmake --build build
 
 ## 日志严重级别
 
-Clog库提供了多个流操作符（`CLOGV`、`CLOGI`、`CLOGD`、`CLOGE`和`CLOGF`），它们分别对应不同的日志严重级别。用户可以通过定义宏`CLOG_LEVEL`来设置当前的日志严重级别。在该级别下，未达到`CLOG_LEVEL`的日志将不会被输出。
+`Clog`库提供了多个流操作符（`CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`和`CLOGF`），它们分别对应不同的日志严重级别。用户可以通过定义宏`CLOG_LEVEL`来设置当前的日志严重级别。在该级别下，未达到`CLOG_LEVEL`的日志将不会被输出。
 
 下表展示了不同的日志严重级别及其对应的宏定义、正常输出的流操作符和被屏蔽的流操作符：
 
 | 日志严重级别 | 宏定义 | 正常输出的流操作符 | 被屏蔽的流操作符 |
 | ---  | --- | --- | --- |
-| verbose | `CLOG_LEVEL_VERBOSE` | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGE`、`CLOGF` | |
-| info  | `CLOG_LEVEL_INFO` | `CLOGI`、`CLOGD`、`CLOGE`、`CLOGF` | `CLOGV` |
-| debug | `CLOG_LEVEL_DEBUG` | `CLOGD`、`CLOGE`、`CLOGF` | `CLOGV`、`CLOGI` |
-| error | `CLOG_LEVEL_ERROR` | `CLOGE`、`CLOGF` | `CLOGV`、`CLOGI`、`CLOGD` |
-| fatal | `CLOG_LEVEL_FATAL` | `CLOGF` | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGE` |
-| no log | `CLOG_LEVEL_NO_LOG` | | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGE`、`CLOGF` |
+| verbose | `CLOG_LEVEL_VERBOSE` | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`、`CLOGF` | |
+| info  | `CLOG_LEVEL_INFO` | `CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`、`CLOGF` | `CLOGV` |
+| debug | `CLOG_LEVEL_DEBUG` | `CLOGD`、`CLOGW`、`CLOGE`、`CLOGF` | `CLOGV`、`CLOGI` |
+| warning | `CLOG_LEVEL_WARNING` | `CLOGW`、`CLOGE`、`CLOGF` | `CLOGV`、`CLOGI`、`CLOGD` |
+| error | `CLOG_LEVEL_ERROR` | `CLOGE`、`CLOGF` | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGW` |
+| fatal | `CLOG_LEVEL_FATAL` | `CLOGF` | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE` |
+| no log | `CLOG_LEVEL_NO_LOG` | | `CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`、`CLOGF` |
 
-`CLOG_LEVEL`的默认值为`CLOG_LEVEL_VERBOSE`，表示将所有日志输出。下面是一个示例代码，展示了如何将`CLOG_LEVEL`定义为`CLOG_LEVEL_DEBUG`，从而屏蔽`CLOGV`和`CLOGI`级别的日志，只输出`CLOGD`、`CLOGE`和`CLOGF`级别的日志：
+`CLOG_LEVEL`的默认值为`CLOG_LEVEL_VERBOSE`，表示将所有日志输出。下面是一个示例代码，展示了如何将`CLOG_LEVEL`定义为`CLOG_LEVEL_DEBUG`，从而屏蔽`CLOGV`和`CLOGI`级别的日志，只输出`CLOGD`、`CLOGW`、`CLOGE`和`CLOGF`级别的日志：
 
 ```c++
 #define CLOG_LEVEL (CLOG_LEVEL_DEBUG)  // 设置日志严重级别为Debug
@@ -90,6 +91,7 @@ int main() {
   CLOGV << "This is verbose log";  // 这句日志将不会打印
   CLOGI << "This is info log";     // 这句日志将不会打印
   CLOGD << "This is debug log";
+  CLOGW << "This is warning log";
   CLOGE << "This is error log";
   CLOGF << "This is fatal log";
   return 0;
@@ -121,9 +123,10 @@ cmake --build build
 运行结果如下：
 
 ```log
-20240412 16:02:36.045 D 18640-23428 main.cpp:8 main] This is debug log
-20240412 16:02:36.048 E 18640-23428 main.cpp:9 main] This is error log
-20240412 16:02:36.048 F 18640-23428 main.cpp:10 main] This is fatal log
+20240412 18:25:34.586 D 21596-17668 main.cpp:8 main] This is debug log
+20240412 18:25:34.589 W 21596-17668 main.cpp:9 main] This is warning log
+20240412 18:25:34.589 E 21596-17668 main.cpp:10 main] This is error log
+20240412 18:25:34.589 F 21596-17668 main.cpp:11 main] This is fatal log
 ```
 
 ## 前缀格式
@@ -176,6 +179,7 @@ int main() {
   CLOGV << "This is verbose log";
   CLOGI << "This is info log";
   CLOGD << "This is debug log";
+  CLOGW << "This is warning log";
   CLOGE << "This is error log";
   CLOGF << "This is fatal log";
   return 0;
@@ -207,10 +211,10 @@ cmake --build build
 运行结果如下：
 
 ```log
-16:05:16.381 V main.cpp:13 main] This is verbose log
-16:05:16.384 I main.cpp:14 main] This is info log
-16:05:16.384 D main.cpp:15 main] This is debug log
-16:05:16.385 W main.cpp:16 main] This is warning log
-16:05:16.385 E main.cpp:17 main] This is error log
-16:05:16.385 F main.cpp:18 main] This is fatal log
+18:25:56.975 V main.cpp:8 main] This is verbose log
+18:25:56.982 I main.cpp:9 main] This is info log
+18:25:56.982 D main.cpp:10 main] This is debug log
+18:25:56.982 W main.cpp:11 main] This is warning log
+18:25:56.983 E main.cpp:12 main] This is error log
+18:25:56.983 F main.cpp:13 main] This is fatal log
 ```

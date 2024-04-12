@@ -8,6 +8,7 @@ int main() {
   CLOGV << "This is verbose log";
   CLOGI << "This is info log";
   CLOGD << "This is debug log";
+  CLOGW << "This is warning log";
   CLOGE << "This is error log";
   CLOGF << "This is fatal log";
   return 0;
