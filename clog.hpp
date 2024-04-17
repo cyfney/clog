@@ -24,38 +24,13 @@
  * For more information, please visit: https://github.com/cyfney/clog
  */
 
+#pragma once
 #ifndef __CLOG_H__
 #define __CLOG_H__
-#pragma once
-
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <type_traits>
-
-#if defined(__APPLE__)
-#include <unistd.h>
-#elif defined(__ANDROID__)
-#include <android/log.h>
-#include <unistd.h>
-#elif defined(_WIN32)
-#include <windows.h>
-#elif defined(__linux__)
-#include <unistd.h>
-#endif
 
 #define CLOG_VERSION_MAJOR (1)
 #define CLOG_VERSION_MINOR (0)
-#define CLOG_VERSION_PATCH (0)
-
-#define CLOG_LEVEL_VERBOSE (0)
-#define CLOG_LEVEL_INFO (1)
-#define CLOG_LEVEL_DEBUG (2)
-#define CLOG_LEVEL_ERROR (3)
-#define CLOG_LEVEL_FATAL (4)
-#define CLOG_LEVEL_WARNING (5)
-#define CLOG_LEVEL_NO_LOG (6)
+#define CLOG_VERSION_PATCH (1)
 
 #ifndef CLOG_PREFIX_DATE
 #define CLOG_PREFIX_DATE (1)
@@ -93,46 +68,80 @@
 #define CLOG_LEVEL CLOG_LEVEL_VERBOSE
 #endif
 
+#define CLOG_LEVEL_VERBOSE (0)
+#define CLOG_LEVEL_INFO (1)
+#define CLOG_LEVEL_DEBUG (2)
+#define CLOG_LEVEL_ERROR (3)
+#define CLOG_LEVEL_FATAL (4)
+#define CLOG_LEVEL_WARNING (5)
+#define CLOG_LEVEL_NO_LOG (6)
+
 #if CLOG_LEVEL <= CLOG_LEVEL_VERBOSE
 #define CLOGV \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_VERBOSE)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_VERBOSE)
 #else
 #define CLOGV ClogDummy()
 #endif
 
 #if CLOG_LEVEL <= CLOG_LEVEL_INFO
 #define CLOGI \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_INFO)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_INFO)
 #else
 #define CLOGI ClogDummy()
 #endif
 
 #if CLOG_LEVEL <= CLOG_LEVEL_DEBUG
 #define CLOGD \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_DEBUG)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_DEBUG)
 #else
 #define CLOGD ClogDummy()
 #endif
 
 #if CLOG_LEVEL <= CLOG_LEVEL_WARNING
 #define CLOGW \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_WARNING)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_WARNING)
 #else
 #define CLOGW ClogDummy()
 #endif
 
 #if CLOG_LEVEL <= CLOG_LEVEL_ERROR
 #define CLOGE \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_ERROR)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_ERROR)
 #else
 #define CLOGE ClogDummy()
 #endif
 
 #if CLOG_LEVEL <= CLOG_LEVEL_FATAL
 #define CLOGF \
-  Clog(&__FILE__[std::integral_constant<size_t, GetFileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_FATAL)
+  Clog(&__FILE__[std::integral_constant<size_t, FileNameOffset(__FILE__)>()], __FUNCTION__, __LINE__, CLOG_LEVEL_FATAL)
 #else
 #define CLOGF ClogDummy()
+#endif
+
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <type_traits>
+
+#if defined(__APPLE__) && (defined(CLOG_PREFIX_PID) || defined(CLOG_PREFIX_TID))
+#include <unistd.h>
+#elif defined(__ANDROID__)
+#include <android/log.h>
+#if defined(CLOG_PREFIX_PID) || defined(CLOG_PREFIX_TID)
+#include <unistd.h>
+#endif
+#elif defined(_WIN32)
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4709)
+#if defined(CLOG_PREFIX_PID) || defined(CLOG_PREFIX_TID)
+#include <windows.h>
+#endif
+#elif defined(__linux__) && (defined(CLOG_PREFIX_PID) || defined(CLOG_PREFIX_TID))
+#include <unistd.h>
+#elif defined(IDF_VER) && defined(CLOG_PREFIX_TID)
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #endif
 
 namespace {
@@ -157,9 +166,9 @@ inline char LogLevelToChar(const int log_level) {
 }
 
 template <typename T, size_t size>
-constexpr size_t GetFileNameOffset(const T (&file_path)[size], size_t i = size - 1) {
+constexpr size_t FileNameOffset(const T (&file_path)[size], size_t i = size - 1) {
   static_assert(size > 1, "");
-  return file_path[i] == '/' || file_path[i] == '\\' ? i + 1 : (i == 0 ? 0 : GetFileNameOffset(file_path, i - 1));
+  return file_path[i] == '/' || file_path[i] == '\\' ? i + 1 : (i == 0 ? 0 : FileNameOffset(file_path, i - 1));
 }
 
 struct ClogDummy {
@@ -221,15 +230,15 @@ class Clog : public std::ostringstream {
 
 #if CLOG_PREFIX_FUNCTION_NAME
 
-#if CLOG_PREFIX_DATE || CLOG_PREFIX_TIME || CLOG_PREFIX_LOG_LEVEL || CLOG_PREFIX_PID || CLOG_PREFIX_TID || CLOG_PREFIX_FILE_NAME || \
-    CLOG_PREFIX_FILE_LINE
+#if CLOG_PREFIX_DATE || CLOG_PREFIX_TIME || CLOG_PREFIX_LOG_LEVEL || CLOG_PREFIX_PID || CLOG_PREFIX_TID || \
+    CLOG_PREFIX_FILE_NAME || CLOG_PREFIX_FILE_LINE
         << ' '
 #endif
         << function
 #endif
 
-#if CLOG_PREFIX_DATE || CLOG_PREFIX_TIME || CLOG_PREFIX_LOG_LEVEL || CLOG_PREFIX_PID || CLOG_PREFIX_TID || CLOG_PREFIX_FILE_NAME || \
-    CLOG_PREFIX_FILE_LINE || CLOG_PREFIX_FUNCTION_NAME
+#if CLOG_PREFIX_DATE || CLOG_PREFIX_TIME || CLOG_PREFIX_LOG_LEVEL || CLOG_PREFIX_PID || CLOG_PREFIX_TID || \
+    CLOG_PREFIX_FILE_NAME || CLOG_PREFIX_FILE_LINE || CLOG_PREFIX_FUNCTION_NAME
         << ']' << ' '
 #endif
         ;
@@ -246,6 +255,7 @@ class Clog : public std::ostringstream {
  private:
   const char* const file_ = nullptr;
 
+#if CLOG_PREFIX_PID
   static inline uintmax_t ProcessId() {
 #if defined(__APPLE__) || defined(__ANDROID__) || defined(__linux__)
     return getpid();
@@ -255,7 +265,9 @@ class Clog : public std::ostringstream {
     return 0;
 #endif
   }
+#endif
 
+#if CLOG_PREFIX_TID
   static inline uintmax_t ThreadId() {
 #if defined(__APPLE__)
     return pthread_mach_thread_np(pthread_self());
@@ -263,12 +275,13 @@ class Clog : public std::ostringstream {
     return gettid();
 #elif defined(_WIN32)
     return GetCurrentThreadId();
-#elif INCLUDE_xTaskGetCurrentTaskHandle
-    return uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+#elif defined(IDF_VER)
+    return reinterpret_cast<uintmax_t>(xTaskGetCurrentTaskHandle());
 #else
     return 0;
 #endif
   }
+#endif
 };
 }  // namespace
 #endif

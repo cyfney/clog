@@ -10,6 +10,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCE_FILES)
 
-set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
-
 add_executable(test ${SOURCE_FILES})
+
+target_compile_options(test PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
