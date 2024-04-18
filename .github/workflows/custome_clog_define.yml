@@ -32,9 +32,9 @@ jobs:
         clog_prefix_log_level: [0, 1]
         clog_prefix_pid: [0, 1]
         clog_prefix_tid: [0, 1]
-        # clog_prefix_file_name: [0, 1]
-        # clog_prefix_file_line: [0, 1]
-        # clog_prefix_function_name: [0, 1]
+        clog_prefix_file_name: [0, 1]
+        clog_prefix_file_line: [0, 1]
+        clog_prefix_function_name: [0, 1]
         # clog_level: [CLOG_LEVEL_VERBOSE, CLOG_LEVEL_INFO, CLOG_LEVEL_DEBUG, CLOG_LEVEL_ERROR, CLOG_LEVEL_FATAL, CLOG_LEVEL_WARNING, CLOG_LEVEL_NO_LOG]
         include:
           - os: windows-latest
@@ -77,6 +77,9 @@ jobs:
         -DCLOG_PREFIX_LOG_LEVEL=${{ matrix.clog_prefix_log_level }}
         -DCLOG_PREFIX_PID=${{ matrix.clog_prefix_pid }}
         -DCLOG_PREFIX_TID=${{ matrix.clog_prefix_tid }}
+        -DCLOG_PREFIX_FILE_NAME=${{ matrix.clog_prefix_file_name }}
+        -DCLOG_PREFIX_FILE_LINE=${{ matrix.clog_prefix_file_line }}
+        -DCLOG_PREFIX_FUNCTION_NAME=${{ matrix.clog_prefix_function_name }}
         -S ${{ github.workspace }}/example/${{ matrix.example }}
 
     - name: Build
