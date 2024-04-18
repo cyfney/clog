@@ -28,6 +28,7 @@ jobs:
         c_compiler: [gcc, clang, cl]
         example: [print]
         clog_prefix_date: [0, 1]
+        CLOG_PREFIX_TIME: [0, 1]
         include:
           - os: windows-latest
             c_compiler: cl
@@ -65,6 +66,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCLOG_PREFIX_DATE=${{ matrix.clog_prefix_date }}
+        -DCLOG_PREFIX_TIME=${{ matrix.CLOG_PREFIX_TIME }}
         -S ${{ github.workspace }}/example/${{ matrix.example }}
 
     - name: Build
