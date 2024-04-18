@@ -30,7 +30,7 @@
 
 #define CLOG_VERSION_MAJOR (1)
 #define CLOG_VERSION_MINOR (0)
-#define CLOG_VERSION_PATCH (1)
+#define CLOG_VERSION_PATCH (2)
 
 #ifndef CLOG_PREFIX_DATE
 #define CLOG_PREFIX_DATE (1)

@@ -31,39 +31,46 @@ int main() {
 }
 ```
 
-The example program directory is located at [examples/simple](examples/simple). On a computer (Windows/Linux/MacOS), you can use the `cmake` command to compile and run the program. First, make sure you have installed `cmake`. If not, please refer to the official installation guide on the cmake website. Then, follow these steps:
+The example program directory is located at [example/print](example/print). On a computer (Windows/Linux/MacOS), you can use the `cmake` command to compile and run the program. First, make sure you have installed `cmake`. If not, please refer to the official installation guide on the cmake website. Then, follow these steps. Other example projects have similar compilation methods, which will not be discussed in detail later.
 
-```shell
-cd examples/simple 
-cmake -B build 
-cmake --build build 
-```
-
-Run:
-
-- Windows
+- Enter the directory of the example project
 
   ```shell
-  ./build/Debug/test
+  cd example/print
   ```
 
-- Linux/MacOS
+- Use the cmake command to compile
 
   ```shell
-  ./build/test
+  cmake -B build -DCMAKE_BUILD_TYPE=Debug
+  cmake --build build --config Debug
   ```
 
-The output will look like this:
+- Run
 
-```log
-20240412 15:59:27.903 V 24060-18256 main.cpp:4 main] This is verbose log 
-20240412 15:59:27.907 I 24060-18256 main.cpp:5 main] This is info log 
-20240412 15:59:27.907 D 24060-18256 main.cpp:6 main] This is debug log 
-20240412 15:59:27.907 W 24060-18256 main.cpp:7 main] This is warning log 
-20240412 15:59:27.907 E 24060-18256 main.cpp:8 main] This is error log 
-20240412 15:59:27.908 F 24060-18256 main.cpp:9 main] This is fatal log 
-20240412 15:59:27.908 I 24060-18256 main.cpp:11 main] clog version: 1.0.0
-```
+  - Windows
+
+    ```shell
+    ./build/Debug/example
+    ```
+
+  - Linux/MacOS
+
+    ```shell
+    ./build/example
+    ```
+
+- The output will look like this:
+
+  ```log
+  20240412 15:59:27.903 V 24060-18256 main.cpp:4 main] This is verbose log 
+  20240412 15:59:27.907 I 24060-18256 main.cpp:5 main] This is info log 
+  20240412 15:59:27.907 D 24060-18256 main.cpp:6 main] This is debug log 
+  20240412 15:59:27.907 W 24060-18256 main.cpp:7 main] This is warning log 
+  20240412 15:59:27.907 E 24060-18256 main.cpp:8 main] This is error log 
+  20240412 15:59:27.908 F 24060-18256 main.cpp:9 main] This is fatal log 
+  20240412 15:59:27.908 I 24060-18256 main.cpp:11 main] clog version: 1.0.0
+  ```
 
 ## Log Severity Levels
 
@@ -99,27 +106,7 @@ int main() {
 }
 ```
 
-The example program directory is located at [examples/log_level](examples/log_level/). You can compile and run it on your computer (Windows/Linux/MacOS) using the `cmake` command:
-
-```shell
-cd examples/log_level
-cmake -B build
-cmake --build build
-```
-
-Run:
-
-- Windows
-
-  ```shell
-  ./build/Debug/test
-  ```
-
-- Linux/MacOS
-
-  ```shell
-  ./build/test
-  ```
+The example program directory is located at [example/custom_log_level_print](example/custom_log_level_print/). For compilation and running methods, please refer to the previously described example project [example/print](example/print) for compilation and running.
 
 The output will look like this:
 
@@ -187,27 +174,7 @@ int main() {
 }
 ```
 
-The example program directory is located at [examples/prefix](examples/prefix). On a computer (Windows/Linux/MacOS), you can use the `cmake` command to compile and run it:
-
-```shell
-cd examples/prefix
-cmake -B build
-cmake --build build
-```
-
-Run:
-
-- Windows
-
-  ```shell
-  ./build/Debug/test
-  ```
-
-- Linux/MacOS
-
-  ```shell
-  ./build/test
-  ```
+The example program directory is located at [example/custom_prefix_print](example/custom_prefix_print). For compilation and running methods, please refer to the previously described example project [example/print](example/print) for compilation and running.
 
 The output will look like this:
 

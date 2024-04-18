@@ -4,13 +4,13 @@
 
 `clog`是一个`C++`跨平台的日志打印库，适用于多种操作系统和嵌入式系统。在软件开发过程中，日志记录对于问题定位和解决至关重要。clog库旨在提供一个简单易用且功能强大的日志打印解决方案，它能输出包含日期、时间、文件名、行号、函数名等关键信息的日志，便于开发者快速定位和解决项目中的问题。
 
-使用clog库非常方便，只需包含一个头文件[clog.hpp](clog.hpp)，并将该头文件添加到您的项目中即可开始打印日志，类似于使用`std::cout`的流式打印操作。
+使用`clog`库非常方便，只需将头文件[clog.hpp](clog.hpp)添加到你的项目中即可开始使用，使用方式类似于`std::cout`的流式打印。
 
 除了基本的日志输出功能，clog还支持日志的格式化输出和日志严重级别设置，让您更灵活地控制日志的内容和输出。例如，您可以自定义日志的时间格式、文件名显示方式等。同时，通过设置日志严重级别，您可以轻松过滤掉不必要的日志内容，提高开发效率。
 
 ## 开始
 
-你可以使用类似`std::cout`的流操作符`CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`和`CLOGF`来打印不同严重级别的日志。这些操作符分别对应于不同的[日志严重级别](#日志严重级别)。以下是一个简单的示例：
+你可以使用类似`std::cout`的流操作符`CLOGV`、`CLOGI`、`CLOGD`、`CLOGW`、`CLOGE`或者`CLOGF`来打印不同严重级别的日志。这些操作符分别对应于不同的[日志严重级别](#日志严重级别)。以下是一个简单的示例：
 
 ``` c++
 #include "clog.hpp"
@@ -29,40 +29,48 @@ int main() {
 }
 ```
 
-该示例程序目录位于[examples/simple](examples/simple)，在电脑端（Windows/Linux/MacOS）上，您可以使用`cmake`命令进行编译。
-首先，请确保您已安装cmake。如果没有，请参考cmake官方网站上的安装指南进行安装。然后，按照以下步骤操作：
+该示例程序目录位于[example/print](example/print)，你可以在电脑端（Windows/Linux/MacOS）上使用`cmake`命令进行编译。
 
-```shell
-cd examples/simple
-cmake -B build
-cmake --build build
-```
+首先，请确保您已安装cmake。如果没有，请参考cmake官方网站上的安装指南进行安装。然后，按照以下步骤操作，其他示例工程编译方式类似后续不再赘述。
 
-运行:
-
-- Windows
+- 进入到示例工程目录
 
   ```shell
-  ./build/Debug/test
+  cd example/print
   ```
 
-- Linux/MacOS
+- 使用`cmake`命令编译
 
   ```shell
-  ./build/test
+  cmake -B build -DCMAKE_BUILD_TYPE=Debug
+  cmake --build build --config Debug
   ```
 
-运行结果如下：
+- 运行
 
-```text
-20240412 15:59:27.903 V 24060-18256 main.cpp:4 main] This is verbose log
-20240412 15:59:27.907 I 24060-18256 main.cpp:5 main] This is info log
-20240412 15:59:27.907 D 24060-18256 main.cpp:6 main] This is debug log
-20240412 15:59:27.907 W 24060-18256 main.cpp:7 main] This is warning log
-20240412 15:59:27.907 E 24060-18256 main.cpp:8 main] This is error log
-20240412 15:59:27.908 F 24060-18256 main.cpp:9 main] This is fatal log
-20240412 15:59:27.908 I 24060-18256 main.cpp:11 main] clog version: 1.0.0
-```
+  - Windows
+
+    ```shell
+    ./build/Debug/example
+    ```
+
+  - Linux/MacOS
+
+    ```shell
+    ./build/example
+    ```
+
+- 运行结果如下所示
+
+  ```text
+  20240412 15:59:27.903 V 24060-18256 main.cpp:4 main] This is verbose log
+  20240412 15:59:27.907 I 24060-18256 main.cpp:5 main] This is info log
+  20240412 15:59:27.907 D 24060-18256 main.cpp:6 main] This is debug log
+  20240412 15:59:27.907 W 24060-18256 main.cpp:7 main] This is warning log
+  20240412 15:59:27.907 E 24060-18256 main.cpp:8 main] This is error log
+  20240412 15:59:27.908 F 24060-18256 main.cpp:9 main] This is fatal log
+  20240412 15:59:27.908 I 24060-18256 main.cpp:11 main] clog version: 1.0.0
+  ```
 
 ## 日志严重级别
 
@@ -98,29 +106,9 @@ int main() {
 }
 ```
 
-该示例程序目录位于[examples/log_level](examples/log_level)，可在电脑端（Windows/Linux/MacOS）上，您可以使用`cmake`命令进行编译：
+该示例程序目录位于[example/custom_log_level_print](example/custom_log_level_print)，编译运行方式请参考之前描述的示例工程[example/print](example/print)的编译运行。
 
-```shell
-cd examples/log_level
-cmake -B build
-cmake --build build
-```
-
-运行:
-
-- Windows
-
-  ```shell
-  ./build/Debug/test
-  ```
-
-- Linux/MacOS
-
-  ```shell
-  ./build/test
-  ```
-
-运行结果如下：
+运行结果如下所示，info和verbose级别的日志将不会打印：
 
 ```log
 20240412 18:25:34.586 D 21596-17668 main.cpp:8 main] This is debug log
@@ -186,29 +174,9 @@ int main() {
 }
 ```
 
-该示例程序目录位于[examples/prefix](examples/prefix)，可在电脑端（Windows/Linux/MacOS）上，您可以使用`cmake`命令进行编译：
+该示例程序目录位于[example/custom_prefix_print](example/custom_prefix_print)，编译运行方式请参考之前描述的示例工程[example/print](example/print)的编译运行。
 
-```shell
-cd examples/prefix
-cmake -B build
-cmake --build build
-```
-
-运行:
-
-- Windows
-
-  ```shell
-  ./build/Debug/test
-  ```
-
-- Linux/MacOS
-
-  ```shell
-  ./build/test
-  ```
-
-运行结果如下：
+运行结果如下所示：
 
 ```log
 18:25:56.975 V main.cpp:8 main] This is verbose log
